@@ -13,10 +13,11 @@ public class Board
     private int[][] dices;
 
 
-    public Board()
+    public Board(int rows, int cols)
     {
-        rows = 3;
-        cols = 3;
+        this.rows = rows;
+        this.cols = cols;
+
         dices = new int[cols][];
         for (int col = 0; col < cols; col++)
         {
@@ -24,22 +25,29 @@ public class Board
         }
     }
 
-    public int GetScore(int col)
+    public int GetTotalScore()
+    {
+        var score = 0;
+        for (int col = 0; col < cols; col++)
+            score += GetColumnScore(col);
+        return score;
+    }
+
+
+    public int GetColumnScore(int col)
     {
         if (!IsColumnInBounds(col)) throw new IndexOutOfRangeException("column not in bounds");
         var score = 0;
-        
+
         Dictionary<int, int> valueTimesDictionary = new();
-        for (var row  = 0; row < rows; row++)
+        for (var row = 0; row < rows; row++)
         {
             var val = dices[col][row];
             valueTimesDictionary[val]++;
         }
 
-        foreach (var valueTimePair in valueTimesDictionary)
+        foreach (var (val, times) in valueTimesDictionary)
         {
-            var val = valueTimePair.Key;
-            var times = valueTimePair.Value;
             score += val * times;
         }
 
@@ -55,20 +63,27 @@ public class Board
         return -1;
     }
 
-    private bool IsRowFull(int col)
+    public bool IsColFull(int col)
     {
         for (var row = rows - 1; row >= 0; row--)
             if (dices[col][row] == 0)
                 return false;
-        
+
         return true;
     }
-
+    
+    private bool IsBoardFull()
+    {
+        for (var col = 0; col < cols; col++)
+            if(!IsColFull(col))
+                return false;
+        return true;
+    }
 
     public void PlaceDie(int dieValue, int col)
     {
         if (!IsColumnInBounds(col)) throw new IndexOutOfRangeException("column not in bounds");
-        if (IsRowFull(col)) throw new IndexOutOfRangeException("row is full");
+        if (IsColFull(col)) throw new IndexOutOfRangeException("row is full");
 
         var firstEmptyPlace = GetFirstEmptyPlace(col);
         dices[col][firstEmptyPlace] = dieValue;
@@ -81,22 +96,6 @@ public class Board
         Debug.Log("Before " + dices.Length);
         dices[col] = dices[col].Where(val => val != dieValue).ToArray();
         Debug.Log("After " + dices.Length);
-        
-        
-        // int removed = 0;
-        // for (int row = 0; row < rows; row++)
-        // {
-        //     while (dices[col][row] == dieValue)
-        //     {
-        //         removed++;
-        //         if (IsRowInBounds(row + removed))
-        //             dices[col][row] = dices[col][row + removed];
-        //         else
-        //             dices[col][row] = 0;
-        //     }
-        //     
-        // }
-
     }
 
     private bool IsRowInBounds(int row) => 0 <= row && row < rows;
