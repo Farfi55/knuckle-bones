@@ -12,11 +12,14 @@ public class Board
 
     private int[][] dices;
 
+    public Action OnBoardChanged;
+    public Action OnDiePlaced;
+    public Action OnBoardFilled;
 
-    public Board(int rows, int cols)
+    public Board(GameRules rules)
     {
-        this.rows = rows;
-        this.cols = cols;
+        this.rows = rules.rows;
+        this.cols = rules.cols;
 
         dices = new int[cols][];
         for (int col = 0; col < cols; col++)
@@ -87,6 +90,11 @@ public class Board
 
         var firstEmptyPlace = GetFirstEmptyPlace(col);
         dices[col][firstEmptyPlace] = dieValue;
+        
+        OnBoardChanged?.Invoke();
+        OnDiePlaced?.Invoke();
+        if(IsBoardFull())
+            OnBoardFilled?.Invoke();
     }
 
     public void RemoveDiceWithValue(int dieValue, int col)
@@ -96,6 +104,8 @@ public class Board
         Debug.Log("Before " + dices.Length);
         dices[col] = dices[col].Where(val => val != dieValue).ToArray();
         Debug.Log("After " + dices.Length);
+        
+        OnBoardChanged?.Invoke();
     }
 
     private bool IsRowInBounds(int row) => 0 <= row && row < rows;

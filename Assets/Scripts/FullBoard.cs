@@ -2,18 +2,24 @@ using System;
 
 public class FullBoard
 {
-    private readonly int sides = 2;
     private readonly Board[] boards;
+    private readonly int sides;
+    private readonly int cols;
+    private readonly int rows;
 
-    private readonly int cols = 3;
-    private readonly int rows = 3;
+    // public FullBoard() : this(new GameRules()) { }
+        
     
-    public FullBoard()
+    public FullBoard(GameRules rules)
     {
+        this.sides = rules.sides;
+        this.cols = rules.cols;
+        this.rows = rules.rows;
+
         boards = new Board[sides];
         for (int side = 0; side < sides; side++)
         {
-            boards[side] = new Board(cols, rows);
+            boards[side] = new Board(rules);
         }
 
     }
