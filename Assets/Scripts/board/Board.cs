@@ -12,8 +12,8 @@ public class Board
 
     private int[][] dices;
 
-    public Action OnBoardChanged;
-    public Action OnDiePlaced;
+    public Action<Board> OnBoardChanged;
+    public Action<Board, int, int> OnDiePlaced;
     public Action OnBoardFilled;
 
     public Board(GameRules rules)
@@ -91,8 +91,8 @@ public class Board
         var firstEmptyPlace = GetFirstEmptyPlace(col);
         dices[col][firstEmptyPlace] = dieValue;
         
-        OnBoardChanged?.Invoke();
-        OnDiePlaced?.Invoke();
+        OnBoardChanged?.Invoke(this);
+        OnDiePlaced?.Invoke(this, dieValue, col);
         if(IsBoardFull())
             OnBoardFilled?.Invoke();
     }
@@ -105,10 +105,28 @@ public class Board
         dices[col] = dices[col].Where(val => val != dieValue).ToArray();
         Debug.Log("After " + dices.Length);
         
-        OnBoardChanged?.Invoke();
+        OnBoardChanged?.Invoke(this);
     }
 
     private bool IsRowInBounds(int row) => 0 <= row && row < rows;
 
     private bool IsColumnInBounds(int col) => 0 <= col && col < cols;
+}
+
+public class Die
+{
+    public int value { get; protected set; }
+    public int col { get; protected set; } = -1;
+    
+    public Die(int value, int col)
+    {
+        this.value = value;
+        this.col = col;
+    }
+    public Die(int value)
+    {
+        this.value = value;
+    }
+
+    public static implicit operator int(Die die) => die.value;
 }

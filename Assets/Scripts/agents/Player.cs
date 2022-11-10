@@ -4,14 +4,16 @@ using Random = UnityEngine.Random;
 
 public class Player : Agent
 {
+    public int rolledDie = 0;
+
     public override int RollDice()
     {
+        if (rolledDie != 0) return rolledDie;
         var dice = Random.Range(1, 7);
-        Debug.Log(dice);
+        Debug.Log($"player {side} rolled {dice}");
         return dice;
     }
 
-    public int rolledDie = 0;
 
 
     private void Update()
@@ -45,16 +47,17 @@ public class Player : Agent
     {
         if (board.IsColFull(col))
         {
-            Debug.LogWarning("Column is full");
+            Debug.LogWarning($"player {side}, Column {col} is full");
             return;
         }
         if (rolledDie == 0)
         {
-            Debug.LogWarning("You have not rolled the die");
+            Debug.LogWarning($"player {side}, You have not rolled the die");
             return;
         }
 
         board.PlaceDie(rolledDie, col);
+        Debug.Log($"player {side} placed {rolledDie} in column {col}");
         rolledDie = 0;
     }
 }
