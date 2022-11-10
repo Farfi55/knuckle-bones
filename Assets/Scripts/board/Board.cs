@@ -7,8 +7,8 @@ using UnityEngine.Assertions;
 
 public class Board
 {
-    private readonly int rows;
-    private readonly int cols;
+    public readonly int rows;
+    public readonly int cols;
 
     private int[][] dices;
 
@@ -111,22 +111,4 @@ public class Board
     private bool IsRowInBounds(int row) => 0 <= row && row < rows;
 
     private bool IsColumnInBounds(int col) => 0 <= col && col < cols;
-}
-
-public class Die
-{
-    public int value { get; protected set; }
-    public int col { get; protected set; } = -1;
-    
-    public Die(int value, int col)
-    {
-        this.value = value;
-        this.col = col;
-    }
-    public Die(int value)
-    {
-        this.value = value;
-    }
-
-    public static implicit operator int(Die die) => die.value;
 }
