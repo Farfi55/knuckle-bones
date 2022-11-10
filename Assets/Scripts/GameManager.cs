@@ -10,13 +10,14 @@ public class GameManager : MonoBehaviour
     /// Human or AI
     public int nPlayers { get; private set; } = 2;
 
+    private GameState state;
     public GameState State
     {
-        get => State;
+        get => state;
         private set
         {
-            if (value == State) return;
-            State = value;
+            if (value == state) return;
+            state = value;
             OnGameStateChange?.Invoke(State);
         }
     }
@@ -25,7 +26,7 @@ public class GameManager : MonoBehaviour
     public Action<GameState> OnGameStateChange;
 
     private GameRules rules;
-    public FullBoard FullBoard { get; private set; }
+    public FullBoard fullBoard { get; private set; }
 
 
     private void Awake()
@@ -47,7 +48,7 @@ public class GameManager : MonoBehaviour
     {
         State = GameState.STARTING;
         rules = new GameRules();
-        FullBoard = new FullBoard(rules);
+        fullBoard = new FullBoard(rules);
         var agents = FindObjectsOfType<Agent>();
         
         if (agents.Length != nPlayers)
@@ -57,19 +58,19 @@ public class GameManager : MonoBehaviour
         }
 
         // todo: Game manager should not worry about agents and their sides
-        for (int i = 0; i < nPlayers; i++)
+        for (int side = 0; side < nPlayers; side++)
         {
-            agents[i].SetSide(i);
-            var board = FullBoard.GetBoard(i);
+            agents[side].Init(side, fullBoard);
+            var board = fullBoard.GetBoard(side);
             board.OnBoardFilled += OnBoardFilled;
             board.OnDiePlaced += OnDiePlaced;
-
         }
 
         CurrentPlayerSide = Random.Range(0, nPlayers);
         OnSideChanged?.Invoke(CurrentPlayerSide);
         
         State = GameState.PLAYING;
+        Debug.Log("Game started");
         
     }
 
@@ -85,7 +86,7 @@ public class GameManager : MonoBehaviour
         int maxScore = 0;
         for (int player = 0; player < nPlayers; player++)
         {
-            var score = FullBoard.GetBoard(i).GetTotalScore();
+            var score = fullBoard.GetBoard(player).GetTotalScore();
             if (score > maxScore)
             {
                 maxScore = score;
