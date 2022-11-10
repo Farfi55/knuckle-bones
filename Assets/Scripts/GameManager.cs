@@ -25,7 +25,7 @@ public class GameManager : MonoBehaviour
     public Action<int> OnSideChanged;
     public Action<GameState> OnGameStateChange;
 
-    private GameRules rules;
+    public GameRules rules { get; private set; }
     public FullBoard fullBoard { get; private set; }
 
 
@@ -74,7 +74,7 @@ public class GameManager : MonoBehaviour
         
     }
 
-    private void OnDiePlaced()
+    private void OnDiePlaced(Board board, int die, int col)
     {
         CurrentPlayerSide = (CurrentPlayerSide + 1) % nPlayers;
         OnSideChanged?.Invoke(CurrentPlayerSide);
