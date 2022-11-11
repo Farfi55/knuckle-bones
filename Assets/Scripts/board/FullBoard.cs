@@ -20,8 +20,20 @@ public class FullBoard
         for (int side = 0; side < sides; side++)
         {
             boards[side] = new Board(rules);
+            boards[side].OnDiePlaced += OnDiePlaced;
         }
 
+    }
+
+    private void OnDiePlaced(Board board, int dieValue, int col)
+    {
+        for (int side = 0; side < sides; side++)
+        {
+            if (boards[side] != board)
+            {
+                boards[side].RemoveDiceWithValue(dieValue, col);
+            }
+        }
     }
 
 

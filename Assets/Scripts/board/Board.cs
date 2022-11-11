@@ -7,10 +7,11 @@ using UnityEngine.Assertions;
 
 public class Board
 {
+    public const int defaultDieValue = 0;
     public readonly int rows;
     public readonly int cols;
 
-    private int[][] dices;
+    private readonly List<List<int>> dices;
 
     public Action<Board> OnBoardChanged;
     public Action<Board, int, int> OnDiePlaced;
@@ -21,10 +22,14 @@ public class Board
         this.rows = rules.rows;
         this.cols = rules.cols;
 
-        dices = new int[cols][];
+        dices = new List<List<int>>(cols);
         for (int col = 0; col < cols; col++)
         {
-            dices[col] = new int[rows];
+            dices.Add(new List<int>(rows));
+            for (int row = 0; row < rows; row++)
+            {
+                dices[col].Add(defaultDieValue);
+            }
         }
     }
     
@@ -71,7 +76,7 @@ public class Board
     private int GetFirstEmptyPlace(int col)
     {
         for (var row = 0; row < rows; row++)
-            if (dices[col][row] == 0)
+            if (dices[col][row] == defaultDieValue)
                 return row;
         return -1;
     }
@@ -110,10 +115,12 @@ public class Board
     public void RemoveDiceWithValue(int dieValue, int col)
     {
         if (!IsColumnInBounds(col)) throw new IndexOutOfRangeException("column not in bounds");
-
-        Debug.Log("Before " + dices.Length);
-        dices[col] = dices[col].Where(val => val != dieValue).ToArray();
-        Debug.Log("After " + dices.Length);
+        
+        dices[col].RemoveAll(currentDie => currentDie == dieValue);
+        
+        int removed = rows - dices[col].Count;
+        for (int i = 0; i < removed; i++)
+            dices[col].Add(defaultDieValue);
         
         OnBoardChanged?.Invoke(this);
     }
