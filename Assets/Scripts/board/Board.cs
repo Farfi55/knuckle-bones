@@ -27,6 +27,13 @@ public class Board
             dices[col] = new int[rows];
         }
     }
+    
+    public int GetDie(int col, int row)
+    {
+        return dices[col][row];
+    }
+    
+    
 
     public int GetTotalScore()
     {
@@ -36,6 +43,7 @@ public class Board
         return score;
     }
 
+    
 
     public int GetColumnScore(int col)
     {

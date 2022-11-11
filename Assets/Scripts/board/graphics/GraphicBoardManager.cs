@@ -9,15 +9,18 @@ public class GraphicBoardManager : MonoBehaviour
     
     [SerializeField] private Transform graphicBoardRoot;
     
-    [SerializeField] private GraphicBoard graphicBoardPrefab;
-    
-    private List<GraphicBoard> graphicBoards;
+    [SerializeField] public GraphicBoard graphicBoardPrefab;
+
+    [SerializeField] private float distanceBetweenBoards = 5f;
+    private GraphicBoard[] graphicBoards;
     
     
     private void Start()
     {
         gm = GameManager.Instance;
         gm.OnSideChanged += OnSideChanged;
+        
+        graphicBoards = new GraphicBoard[gm.nPlayers];
         for (int side = 0; side < gm.nPlayers; side++)
         {
             GenerateBoard(side);
@@ -27,11 +30,10 @@ public class GraphicBoardManager : MonoBehaviour
     private void GenerateBoard(int side)
     {
         GraphicBoard graphicBoard = Instantiate(graphicBoardPrefab, graphicBoardRoot);
-        graphicBoard.board = gm.fullBoard.GetBoard(side);
         graphicBoard.name = "Board " + side;
         graphicBoard.transform.localPosition = new Vector3(0, side * 10f, 0);
-        
-        graphicBoards.Add(graphicBoard);
+        graphicBoard.Init(gm.fullBoard.GetBoard(side)); 
+        graphicBoards[side] = graphicBoard;
     }
 
     private void OnSideChanged(int side)
