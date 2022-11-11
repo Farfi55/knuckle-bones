@@ -53,9 +53,11 @@ public class Board
         Dictionary<int, int> valueTimesDictionary = new();
         for (var row = 0; row < rows; row++)
         {
-            var val = dices[col][row];
-            valueTimesDictionary[val]++;
-        }
+            var dieValue = dices[col][row];
+            if (!valueTimesDictionary.ContainsKey(dieValue))
+                valueTimesDictionary[dieValue] = 1;
+            else valueTimesDictionary[dieValue]++;
+        }   
 
         foreach (var (val, times) in valueTimesDictionary)
         {

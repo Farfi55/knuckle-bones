@@ -9,7 +9,7 @@ public class GraphicBoardManager : MonoBehaviour
     
     [SerializeField] private Transform graphicBoardRoot;
     
-    [SerializeField] public GraphicBoard graphicBoardPrefab;
+    [SerializeField] private GraphicBoard graphicBoardPrefab;
 
     [SerializeField] private float distanceBetweenBoards = 5f;
     private GraphicBoard[] graphicBoards;
@@ -31,7 +31,7 @@ public class GraphicBoardManager : MonoBehaviour
     {
         GraphicBoard graphicBoard = Instantiate(graphicBoardPrefab, graphicBoardRoot);
         graphicBoard.name = "Board " + side;
-        graphicBoard.transform.localPosition = new Vector3(0, side * 10f, 0);
+        graphicBoard.transform.localPosition = new Vector3(0, side * distanceBetweenBoards, 0);
         graphicBoard.Init(gm.fullBoard.GetBoard(side)); 
         graphicBoards[side] = graphicBoard;
     }

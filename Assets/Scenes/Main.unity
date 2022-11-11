@@ -417,5 +417,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   graphicBoardRoot: {fileID: 966405513}
-  graphicBoardPrefab: {fileID: 4967284230509266729, guid: 15b23df84e77a5e6aa372518d8a37b0d, type: 3}
+  graphicBoardPrefab: {fileID: 7591749486326655821, guid: 15b23df84e77a5e6aa372518d8a37b0d, type: 3}
   distanceBetweenBoards: 5
