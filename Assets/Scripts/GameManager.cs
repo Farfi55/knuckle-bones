@@ -1,4 +1,6 @@
 using System;
+using agents;
+using board;
 using UnityEngine;
 using Random = UnityEngine.Random;
 

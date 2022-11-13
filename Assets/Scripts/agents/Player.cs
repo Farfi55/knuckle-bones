@@ -1,63 +1,65 @@
-using System;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public class Player : Agent
+namespace agents
 {
-    public int rolledDie = 0;
-
-    public override int RollDice()
+    public class Player : Agent
     {
-        if (rolledDie != 0) return rolledDie;
-        var dice = Random.Range(1, 7);
-        Debug.Log($"player {side} rolled {dice}");
-        return dice;
-    }
+        public int rolledDie = 0;
 
-
-
-    private void Update()
-    {
-        if (!IsMyTurn())
-            return;
-
-        if (!Input.anyKeyDown)
-            return;
-
-        if (Input.GetKeyDown(KeyCode.Space))
+        public override int RollDice()
         {
-            rolledDie = RollDice();
+            if (rolledDie != 0) return rolledDie;
+            var dice = Random.Range(1, 7);
+            Debug.Log($"player {side} rolled {dice}");
+            return dice;
         }
 
-        if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            PlaceDie(0);
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            PlaceDie(1);            
-        }
-        else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            PlaceDie(2);
-        }
-    }
 
-    private void PlaceDie(int col)
-    {
-        if (board.IsColFull(col))
+
+        private void Update()
         {
-            Debug.LogWarning($"player {side}, Column {col} is full");
-            return;
-        }
-        if (rolledDie == 0)
-        {
-            Debug.LogWarning($"player {side}, You have not rolled the die");
-            return;
+            if (!IsMyTurn())
+                return;
+
+            if (!Input.anyKeyDown)
+                return;
+
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                rolledDie = RollDice();
+            }
+
+            if (Input.GetKeyDown(KeyCode.Alpha1))
+            {
+                PlaceDie(0);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            {
+                PlaceDie(1);            
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
+            {
+                PlaceDie(2);
+            }
         }
 
-        board.PlaceDie(rolledDie, col);
-        Debug.Log($"player {side} placed {rolledDie} in column {col}");
-        rolledDie = 0;
+        private void PlaceDie(int col)
+        {
+            if (board.IsColFull(col))
+            {
+                Debug.LogWarning($"player {side}, Column {col} is full");
+                return;
+            }
+            if (rolledDie == 0)
+            {
+                Debug.LogWarning($"player {side}, You have not rolled the die");
+                return;
+            }
+
+            board.PlaceDie(rolledDie, col);
+            Debug.Log($"player {side} placed {rolledDie} in column {col}");
+            rolledDie = 0;
+        }
     }
 }

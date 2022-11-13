@@ -1,56 +1,52 @@
-using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
-class GraphicBoard : MonoBehaviour
+namespace board.graphics
 {
-    [SerializeField] private Transform Columns;
-
-    private GameObject[][] dieCells;
-
-    [SerializeField] public Sprite[] dieSprites;
-    
-    public Board board { get; private set; }
-
-    private void Awake()
+    class GraphicBoard : MonoBehaviour
     {
-        int cols = GameManager.Instance.rules.cols;
-        int rows = GameManager.Instance.rules.rows;
+        [SerializeField] private Transform _columnsParent;
+        [SerializeField] private GraphicBoardColumn _columnPrefab;
 
-        dieCells = new GameObject[cols][];
-        for (int col = 0; col < cols; col++)
+        private List<GraphicBoardColumn> _dieColumns;
+    
+        [SerializeField] private TMP_Text _boardScore;
+
+        [SerializeField] private List<Sprite> _dieSprites;
+        [SerializeField] private List<Color> _dieColorsPerRepetition;
+
+        private Board _board;
+        private bool _reverseDieOrder = false;
+        
+        
+
+        public void Init(Board board)
         {
-            dieCells[col] = new GameObject[rows];
-            Transform column = Columns.GetChild(col);
-            for (int row = 0; row < rows; row++)
+            _board = board;
+            _dieColumns = new List<GraphicBoardColumn>();
+            
+            for (var col = 0; col < _board.cols; col++)
             {
-                dieCells[col][row] = column.GetChild(row + 1).gameObject;
+                var graphicBoardColumn = Instantiate(_columnPrefab, _columnsParent);
+                _dieColumns.Add(graphicBoardColumn);
+                graphicBoardColumn.Init(board, col);
+                graphicBoardColumn.InitSlots(_dieSprites, _dieColorsPerRepetition);
+            }
+
+            // board.OnBoardChanged += UpdateBoard;
+            // UpdateBoard(board);
+        }
+        
+        
+        public void SetReverseDieOrder(bool reverseDieOrder)
+        {
+            _reverseDieOrder = reverseDieOrder;
+            foreach (var graphicBoardColumn in _dieColumns)
+            {
+                graphicBoardColumn.SetReverseDieOrder(reverseDieOrder);
             }
         }
-    }
-
-    private void Start()
-    {
-        
-    }
-
-    public void Init(Board board)
-    {
-        this.board = board;
-        board.OnBoardChanged += UpdateBoard;
-        UpdateBoard(board);
-    }
-
-    private void UpdateBoard(Board board)
-    {
-        for (int col = 0; col < board.cols; col++)
-        {
-            for (int row = 0; row < board.rows; row++)
-            {
-                var dieValue = board.GetDie(col, row);
-                Sprite sprite = dieValue == 0 ? null : dieSprites[dieValue - 1];
-                
-                dieCells[col][row].GetComponent<SpriteRenderer>().sprite = sprite;
-            }
-        }            
     }
 }
