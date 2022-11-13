@@ -35,11 +35,16 @@ namespace board.graphics
                 graphicBoardColumn.InitSlots(_dieSprites, _dieColorsPerRepetition);
             }
 
-            // board.OnBoardChanged += UpdateBoard;
-            // UpdateBoard(board);
+            board.OnBoardChanged += OnBoardChanged;
+            OnBoardChanged(board);
         }
-        
-        
+
+        private void OnBoardChanged(Board changedBoard)
+        {
+            _boardScore.SetText(changedBoard.GetTotalScore().ToString());
+        }
+
+
         public void SetReverseDieOrder(bool reverseDieOrder)
         {
             _reverseDieOrder = reverseDieOrder;

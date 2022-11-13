@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace board
 {
@@ -57,7 +58,7 @@ namespace board
 
             foreach (var (val, times) in valueTimesDictionary)
             {
-                score += val * times;
+                score += val * times * times;
             }
 
             return score;
