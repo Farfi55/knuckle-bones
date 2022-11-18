@@ -9,7 +9,8 @@ namespace board.graphics
     public class GraphicBoardColumn : MonoBehaviour
     {
         [SerializeField] private GraphicDieSlot _slotPrefab;
-        [SerializeField] private Transform _slotContainer;
+        [SerializeField] private VerticalLayoutGroup _slotContainer;
+        [SerializeField] private VerticalLayoutGroup _verticalLayoutGroup;
         [SerializeField] private TMP_Text _columnScoreLabel;
 
         public List<GraphicDieSlot> Slots { get; private set; }
@@ -28,7 +29,7 @@ namespace board.graphics
             Slots = new List<GraphicDieSlot>();
             for (int i = 0; i < _board.rows; i++)
             {
-                var slot = Instantiate(_slotPrefab, _slotContainer);
+                var slot = Instantiate(_slotPrefab, _slotContainer.transform);
                 Slots.Add(slot);
             }
 
@@ -64,9 +65,8 @@ namespace board.graphics
         public void SetReverseDieOrder(bool reverseDieOrder)
         {
             _reverseDieOrder = reverseDieOrder;
-            var verticalLayoutGroup = _slotContainer.GetComponent<VerticalLayoutGroup>();
-            verticalLayoutGroup.reverseArrangement = _reverseDieOrder;
-            
+            _verticalLayoutGroup.reverseArrangement = _reverseDieOrder;
+            _slotContainer.reverseArrangement = _reverseDieOrder;
         }
     }
 }

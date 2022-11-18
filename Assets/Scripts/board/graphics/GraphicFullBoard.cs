@@ -5,11 +5,14 @@ namespace board.graphics
     public class GraphicFullBoard : MonoBehaviour
     {
         private GameManager _gm;
-    
-        [SerializeField] private Transform _graphicBoardRoot;
-        [SerializeField] private GraphicBoard _graphicBoardPrefab;
 
-        private GraphicBoard[] _graphicBoards;
+
+        [SerializeField] private Transform _graphicBoardRoot;
+        
+        [SerializeField] private bool _dynamicallyGenerateBoard = true;
+        [SerializeField] private GraphicBoard _graphicBoardPrefab;
+        
+        [SerializeField] private GraphicBoard[] _graphicBoards;
         
         [SerializeField] private bool _reverseOrderEveryOtherRow;
     
@@ -19,10 +22,19 @@ namespace board.graphics
             _gm = GameManager.Instance;
             _gm.OnSideChanged += OnSideChanged;
         
-            _graphicBoards = new GraphicBoard[_gm.nPlayers];
-            for (int side = 0; side < _gm.nPlayers; side++)
+            if (_dynamicallyGenerateBoard)
             {
-                GenerateBoard(side);
+                _graphicBoards = new GraphicBoard[_gm.nPlayers];
+                for (int side = 0; side < _gm.nPlayers; side++) 
+                    GenerateBoard(side);
+                
+            }
+            else
+            {
+                if (_graphicBoards == null)
+                    Debug.LogError("GraphicBoards is null");
+                else if (_graphicBoards.Length != _gm.nPlayers)
+                    Debug.LogError("GraphicBoards array length does not match number of players");
             }
         }
 
