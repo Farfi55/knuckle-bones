@@ -5,15 +5,20 @@ using UnityEngine.UI;
 
 namespace board.graphics
 {
-    [RequireComponent(typeof(Image))]
     public class GraphicDieSlot : MonoBehaviour
     {
-        private Image _image;
+        [SerializeField] private Image _image;
         private Die _die = null;
         private int _valueRepetitions = 1;
         [SerializeField] private Sprite[] _diceSides;
         [SerializeField] private List<Color> _colorsPerRepetition;
 
+
+        private void Awake()
+        {
+            if (_image == null)
+                GetImageComponent();
+        }
 
         public void Init(IEnumerable<Sprite> diceSides, IEnumerable<Color> colorsPerRepetition)
         {
@@ -42,11 +47,6 @@ namespace board.graphics
             UpdateGraphic();
         }
 
-        private void Awake()
-        {
-            _image = GetComponent<Image>();
-        }
-
         private Sprite GetSpriteForDie()
         {
             if (_die is null || _die.Value == Die.DefaultDieValue)
@@ -69,6 +69,13 @@ namespace board.graphics
             if (1 < _valueRepetitions && _valueRepetitions <= _colorsPerRepetition.Count)
                 return _colorsPerRepetition[_valueRepetitions - 1];
             return Color.white;
+        }
+        
+        private void GetImageComponent()
+        {
+            _image = GetComponent<Image>();
+            if (_image == null)
+                Debug.LogError("No image found on " + gameObject.name);
         }
     }
 }

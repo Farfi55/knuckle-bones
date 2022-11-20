@@ -59,6 +59,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 13c11adf98dc95f20a67ad999c1be57b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _image: {fileID: 8586667297642721986}
   _diceSides: []
   _colorsPerRepetition: []
 --- !u!114 &8586667297642721986
