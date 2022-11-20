@@ -8,7 +8,7 @@ namespace board.graphics
     public class GraphicDieSlot : MonoBehaviour
     {
         [SerializeField] private Image _image;
-        private Die _die = null;
+        private Die _die;
         private int _valueRepetitions = 1;
         [SerializeField] private Sprite[] _diceSides;
         [SerializeField] private List<Color> _colorsPerRepetition;
