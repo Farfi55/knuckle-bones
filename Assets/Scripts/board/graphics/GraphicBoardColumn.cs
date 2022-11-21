@@ -27,7 +27,7 @@ namespace board.graphics
             _columnIndex = columnIndex;
 
             Slots = new List<GraphicDieSlot>();
-            for (int i = 0; i < _board.rows; i++)
+            for (int i = 0; i < _board.Rows; i++)
             {
                 var slot = Instantiate(_slotPrefab, _slotContainer.transform);
                 Slots.Add(slot);

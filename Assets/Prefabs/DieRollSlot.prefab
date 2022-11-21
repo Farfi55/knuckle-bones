@@ -9,8 +9,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5005028971012175541}
-  - component: {fileID: 4900416408093579070}
   - component: {fileID: 2471584899286136902}
+  - component: {fileID: 6497853177879710040}
   m_Layer: 0
   m_Name: DieRollSlot
   m_TagString: Untagged
@@ -40,22 +40,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 1, y: 1}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &4900416408093579070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 524309404683742483}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 65972ecd6f9c79f339de50bbd0b168db, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _slot: {fileID: 2471584899286136902}
-  _startDieStopChance: -0.07
-  _dieStopChanceIncrease: 0.07
-  _timeBetweenDieFaces: 0.2
 --- !u!114 &2471584899286136902
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77,6 +61,22 @@ MonoBehaviour:
   - {fileID: 21300000, guid: 33f4e187829615679aee40964d2a38e6, type: 3}
   - {fileID: 21300000, guid: 0ef1e64ec623b891294e6b7523970542, type: 3}
   _colorsPerRepetition: []
+--- !u!114 &6497853177879710040
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 524309404683742483}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9726d55bf30a704f9a478b6825ac2bec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _graphicDieSlot: {fileID: 2471584899286136902}
+  _startDieStopChance: -0.07
+  _dieStopChanceIncrease: 0.07
+  _timeBetweenDieFaces: 0.2
 --- !u!1 &4322186541289090912
 GameObject:
   m_ObjectHideFlags: 0
@@ -212,7 +212,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.17615192, g: 0.14711642, b: 0.3584906, a: 1}
+  m_Color: {r: 0.262, g: 0.13819781, b: 0.1094066, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

@@ -7,8 +7,10 @@ namespace board
     public class Board
     {
         public const int DefaultDieValue = 0;
-        public readonly int rows;
-        public readonly int cols;
+        public readonly int Rows;
+        public readonly int Cols;
+
+        private IDieRoll _dieRoll;
 
         private readonly List<List<int>> dices;
 
@@ -16,38 +18,37 @@ namespace board
         public Action<Board, int, int> OnDiePlaced;
         public Action OnBoardFilled;
 
+
         public Board(GameRules rules)
         {
-            this.rows = rules.rows;
-            this.cols = rules.cols;
+            this.Rows = rules.rows;
+            this.Cols = rules.cols;
 
-            dices = new List<List<int>>(cols);
-            for (int col = 0; col < cols; col++)
+            dices = new List<List<int>>(Cols);
+            for (int col = 0; col < Cols; col++)
             {
-                dices.Add(new List<int>(rows));
-                for (int row = 0; row < rows; row++)
+                dices.Add(new List<int>(Rows));
+                for (int row = 0; row < Rows; row++)
                 {
                     dices[col].Add(DefaultDieValue);
                 }
             }
         }
-    
+
         public int GetDie(int col, int row)
         {
             return dices[col][row];
         }
-    
-    
+
 
         public int GetTotalScore()
         {
             var score = 0;
-            for (int col = 0; col < cols; col++)
+            for (int col = 0; col < Cols; col++)
                 score += GetColumnScore(col);
             return score;
         }
 
-    
 
         public int GetColumnScore(int col)
         {
@@ -67,7 +68,7 @@ namespace board
         public Dictionary<int, int> GetValueRepetitions(int col)
         {
             Dictionary<int, int> valueRepetitionsDictionary = new();
-            for (var row = 0; row < rows; row++)
+            for (var row = 0; row < Rows; row++)
             {
                 var dieValue = dices[col][row];
                 if (!valueRepetitionsDictionary.ContainsKey(dieValue))
@@ -83,11 +84,17 @@ namespace board
             return dices[col];
         }
 
+        public IDieRoll GetDieRoll() => _dieRoll;
 
+        public void SetDieRoll(IDieRoll value)
+        {
+            if (_dieRoll != null) return;
+            _dieRoll = value;
+        }
 
         private int GetFirstEmptyPlace(int col)
         {
-            for (var row = 0; row < rows; row++)
+            for (var row = 0; row < Rows; row++)
                 if (dices[col][row] == DefaultDieValue)
                     return row;
             return -1;
@@ -95,19 +102,29 @@ namespace board
 
         public bool IsColFull(int col)
         {
-            for (var row = rows - 1; row >= 0; row--)
+            for (var row = Rows - 1; row >= 0; row--)
                 if (dices[col][row] == 0)
                     return false;
 
             return true;
         }
-    
+
         private bool IsBoardFull()
         {
-            for (var col = 0; col < cols; col++)
-                if(!IsColFull(col))
+            for (var col = 0; col < Cols; col++)
+                if (!IsColFull(col))
                     return false;
             return true;
+        }
+
+
+        public void PlaceRolledDie(int col)
+        {
+            if (_dieRoll.Die != null)
+            {
+                PlaceDie(_dieRoll.Die, col);
+                _dieRoll.Clear();
+            } 
         }
 
         public void PlaceDie(int dieValue, int col)
@@ -117,28 +134,28 @@ namespace board
 
             var firstEmptyPlace = GetFirstEmptyPlace(col);
             dices[col][firstEmptyPlace] = dieValue;
-        
+
             OnBoardChanged?.Invoke(this);
             OnDiePlaced?.Invoke(this, dieValue, col);
-            if(IsBoardFull())
+            if (IsBoardFull())
                 OnBoardFilled?.Invoke();
         }
 
         public void RemoveDiceWithValue(int dieValue, int col)
         {
             if (!IsColumnInBounds(col)) throw new IndexOutOfRangeException("column not in bounds");
-        
+
             dices[col].RemoveAll(currentDie => currentDie == dieValue);
-        
-            int removed = rows - dices[col].Count;
+
+            int removed = Rows - dices[col].Count;
             for (int i = 0; i < removed; i++)
                 dices[col].Add(DefaultDieValue);
-        
+
             OnBoardChanged?.Invoke(this);
         }
 
-        private bool IsRowInBounds(int row) => 0 <= row && row < rows;
+        private bool IsRowInBounds(int row) => 0 <= row && row < Rows;
 
-        private bool IsColumnInBounds(int col) => 0 <= col && col < cols;
+        private bool IsColumnInBounds(int col) => 0 <= col && col < Cols;
     }
 }

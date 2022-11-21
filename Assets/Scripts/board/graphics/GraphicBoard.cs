@@ -9,8 +9,9 @@ namespace board.graphics
     {
         [SerializeField] private Transform _columnsParent;
         [SerializeField] private GraphicBoardColumn _columnPrefab;
-
         private List<GraphicBoardColumn> _dieColumns;
+        
+        [SerializeField] private GraphicDieRoll _dieRoll;
     
         [SerializeField] private TMP_Text _boardScore;
 
@@ -26,17 +27,18 @@ namespace board.graphics
         {
             _board = board;
             _dieColumns = new List<GraphicBoardColumn>();
-            
-            for (var col = 0; col < _board.cols; col++)
+            _board.SetDieRoll(_dieRoll);
+
+            for (var col = 0; col < _board.Cols; col++)
             {
                 var graphicBoardColumn = Instantiate(_columnPrefab, _columnsParent);
                 _dieColumns.Add(graphicBoardColumn);
-                graphicBoardColumn.Init(board, col);
+                graphicBoardColumn.Init(_board, col);
                 graphicBoardColumn.InitSlots(_dieSprites, _dieColorsPerRepetition);
             }
 
-            board.OnBoardChanged += OnBoardChanged;
-            OnBoardChanged(board);
+            _board.OnBoardChanged += OnBoardChanged;
+            OnBoardChanged(_board);
         }
 
         private void OnBoardChanged(Board changedBoard)

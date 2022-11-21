@@ -1,68 +1,69 @@
 using System;
+using board.graphics;
 
 namespace board
 {
     public class FullBoard
     {
-        private readonly Board[] boards;
-        private readonly int sides;
-        private readonly int cols;
-        private readonly int rows;
+        private readonly Board[] _boards;
+        private readonly int _nPlayers;
+        private readonly int _cols;
+        private readonly int _rows;
 
         // public FullBoard() : this(new GameRules()) { }
         
     
         public FullBoard(GameRules rules)
         {
-            this.sides = rules.sides;
-            this.cols = rules.cols;
-            this.rows = rules.rows;
+            this._nPlayers = rules.sides;
+            this._cols = rules.cols;
+            this._rows = rules.rows;
 
-            boards = new Board[sides];
-            for (int side = 0; side < sides; side++)
+            _boards = new Board[_nPlayers];
+            for (int player = 0; player < _nPlayers; player++)
             {
-                boards[side] = new Board(rules);
-                boards[side].OnDiePlaced += OnDiePlaced;
+                _boards[player] = new Board(rules);
+                _boards[player].OnDiePlaced += OnDiePlaced;
             }
 
         }
 
         private void OnDiePlaced(Board board, int dieValue, int col)
         {
-            for (int side = 0; side < sides; side++)
+            for (int player = 0; player < _nPlayers; player++)
             {
-                if (boards[side] != board)
+                if (_boards[player] != board)
                 {
-                    boards[side].RemoveDiceWithValue(dieValue, col);
+                    _boards[player].RemoveDiceWithValue(dieValue, col);
                 }
             }
         }
 
 
-        public int GetColumnScore(int side, int col)
+        public int GetColumnScore(int player, int col)
         {
-            if (!IsSideInRange(side))
+            if (!IsPlayerInRange(player))
                 throw new ArgumentOutOfRangeException();
         
-            return GetBoard(side).GetColumnScore(col);
+            return GetBoard(player).GetColumnScore(col);
         }
     
-        public int GetSideScore(int side)
+        public int GetPlayerScore(int player)
         {
-            if (!IsSideInRange(side))
+            if (!IsPlayerInRange(player))
                 throw new ArgumentOutOfRangeException();
         
-            return GetBoard(side).GetTotalScore();
+            return GetBoard(player).GetTotalScore();
         }
 
-        public Board GetBoard(int side)
+        public Board GetBoard(int player)
         {
-            if (!IsSideInRange(side))
+            if (!IsPlayerInRange(player))
                 throw new ArgumentOutOfRangeException();
-            return boards[side];
+            return _boards[player];
         }
 
 
-        private bool IsSideInRange(int side) => 0 <= side && side < sides;
+        private bool IsPlayerInRange(int player) => 0 <= player && player < _nPlayers;
     }
 }

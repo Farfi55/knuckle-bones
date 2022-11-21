@@ -20,12 +20,12 @@ namespace board.graphics
         private void Start()
         {
             _gm = GameManager.Instance;
-            _gm.OnSideChanged += OnSideChanged;
+            _gm.OnNextPlayerTurn += OnNextPlayerTurn;
         
             if (_dynamicallyGenerateBoard)
             {
-                _graphicBoards = new GraphicBoard[_gm.nPlayers];
-                for (int side = 0; side < _gm.nPlayers; side++) 
+                _graphicBoards = new GraphicBoard[_gm.NPlayers];
+                for (int side = 0; side < _gm.NPlayers; side++) 
                     GenerateBoard(side);
                 
             }
@@ -33,7 +33,7 @@ namespace board.graphics
             {
                 if (_graphicBoards == null)
                     Debug.LogError("GraphicBoards is null");
-                else if (_graphicBoards.Length != _gm.nPlayers)
+                else if (_graphicBoards.Length != _gm.NPlayers)
                     Debug.LogError("GraphicBoards array length does not match number of players");
             }
         }
@@ -43,7 +43,7 @@ namespace board.graphics
             var graphicBoard = Instantiate(_graphicBoardPrefab, _graphicBoardRoot);
             graphicBoard.name = "Board " + side;
 
-            var board = _gm.fullBoard.GetBoard(side);
+            var board = _gm.FullBoard.GetBoard(side);
             graphicBoard.Init(board);
             
             var reverseOrder = _reverseOrderEveryOtherRow && side % 2 == 1;
@@ -52,9 +52,9 @@ namespace board.graphics
             _graphicBoards[side] = graphicBoard;
         }
 
-        private void OnSideChanged(int side)
+        private void OnNextPlayerTurn(int side)
         {
-        
+            
         }
     }
 }

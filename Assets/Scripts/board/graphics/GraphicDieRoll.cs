@@ -5,28 +5,32 @@ using Random = UnityEngine.Random;
 
 namespace board.graphics
 {
-    public class RolledDiceSlot : MonoBehaviour
+    public class GraphicDieRoll : MonoBehaviour, IDieRoll
     {
-        [SerializeField] private GraphicDieSlot _slot;
-
-        public Action OnDieRollStart;
-        // invoked when die animation is finished
-        public Action<Die> OnDieRollEnd;
-
+        [SerializeField] private GraphicDieSlot _graphicDieSlot;
+        
         [SerializeField, Range(-1f, 1f)] private float _startDieStopChance = -0.07f;
         [SerializeField, Range(0f, 1f)] private float _dieStopChanceIncrease = 0.07f;
         [SerializeField] private float _timeBetweenDieFaces = .2f;
-
+        
         private Coroutine _rollCoroutine;
+        public Die Die { get; set; }
 
-        public Die Die { get; private set; }
+        public Action OnDieRollStart { get; set; }
+        public Action<Die> OnDieRollEnd { get; set; }
+        public Action<Die> OnDieRollUpdate { get; set; }
 
-        private IEnumerator Roll()
+        private void Awake()
+        {
+            _graphicDieSlot.SetDie(null);
+        }
+
+        private IEnumerator RollAnimation()
         {
             OnDieRollStart?.Invoke();
             
             var currDie = new Die(RandomDieValue());
-            _slot.SetDie(currDie);
+            OnDieRollUpdate?.Invoke(currDie);
 
             float dieStopChance = _startDieStopChance;
             while (dieStopChance > Random.value)
@@ -34,7 +38,7 @@ namespace board.graphics
                 yield return new WaitForSeconds(_timeBetweenDieFaces);
                 dieStopChance += _dieStopChanceIncrease;
                 currDie = RandomDieBut(currDie.Value);
-                _slot.SetDie(currDie);
+                OnDieRollUpdate?.Invoke(currDie);
             }
 
             Die = currDie;
@@ -45,14 +49,14 @@ namespace board.graphics
         {
             if (Die == null && _rollCoroutine == null)
             {
-                _rollCoroutine = StartCoroutine(Roll());
+                _rollCoroutine = StartCoroutine(RollAnimation());
             }
         }
         
         public void Clear()
         {
             Die = null;
-            _slot.SetDie(null);
+            _graphicDieSlot.SetDie(null);
         }
 
         private int RandomDieValue() => Random.Range(1, 7);
@@ -64,5 +68,8 @@ namespace board.graphics
                 randomDieValue = RandomDieValue();
             return new Die(randomDieValue);
         }
+
+        
+     
     }
 }

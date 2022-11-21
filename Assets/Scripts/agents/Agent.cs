@@ -1,27 +1,34 @@
 using board;
+using board.graphics;
 using UnityEngine;
 
 namespace agents
 {
     public abstract class Agent : MonoBehaviour
     {
-        protected int side = -1;
-        protected FullBoard fullboard;
-        protected Board board;
-
-        public abstract int RollDice();
-        // void ChoseColumnToPlaceDie(int dieValue, FullBoard fullBoard);
+        protected int PlayerID = -1;
+        protected FullBoard FullBoard;
+        protected Board Board;
 
         public void Init(int side, FullBoard fullBoard)
         {
-            this.side = side;
-            this.fullboard = fullBoard;
-            this.board = fullboard.GetBoard(side);
+            PlayerID = side;
+            FullBoard = fullBoard;
+            Board = FullBoard.GetBoard(side);
+            
+            GameManager.Instance.OnNextPlayerTurn += OnNextPlayerTurn;
         }
 
-        protected bool IsMyTurn()
+        private void OnNextPlayerTurn(int playerID)
         {
-            return side == GameManager.Instance.CurrentPlayerSide;
+            if (playerID != PlayerID) return;
+            
+            Board.GetDieRoll().StartRolling();
+        }
+
+        protected bool IsItMyTurn()
+        {
+            return PlayerID == GameManager.Instance.CurrentTurnPlayerID;
         }
     }
 }

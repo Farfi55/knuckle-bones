@@ -7,29 +7,28 @@ using Random = UnityEngine.Random;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
-    public int CurrentPlayerSide { get; private set; }
+    public int CurrentTurnPlayerID { get; private set; }
 
     /// Human or AI
-    public int nPlayers { get; private set; } = 2;
+    public int NPlayers { get; private set; } = 2;
 
-    private GameState state;
+    private GameState _state;
     public GameState State
-    {
-        get => state;
+    {   
+        get => _state;
         private set
         {
-            if (value == state) return;
-            state = value;
+            if (value == _state) return;
+            _state = value;
             OnGameStateChange?.Invoke(State);
         }
     }
 
-    public Action<int> OnSideChanged;
+    public Action<int> OnNextPlayerTurn;
     public Action<GameState> OnGameStateChange;
 
-    public GameRules rules { get; private set; }
-    public FullBoard fullBoard { get; private set; }
-
+    public GameRules Rules { get; private set; }
+    public FullBoard FullBoard { get; private set; }
 
     private void Awake()
     {
@@ -49,27 +48,28 @@ public class GameManager : MonoBehaviour
     private void StartGame()
     {
         State = GameState.STARTING;
-        rules = new GameRules();
-        fullBoard = new FullBoard(rules);
+        Rules = new GameRules();
+        FullBoard = new FullBoard(Rules);
         var agents = FindObjectsOfType<Agent>();
         
-        if (agents.Length != nPlayers)
+        if (agents.Length != NPlayers)
         {
             Debug.LogException(new Exception("Number of agents does not match number of players"));
             return;
         }
 
-        // todo: Game manager should not worry about agents and their sides
-        for (int side = 0; side < nPlayers; side++)
+        // todo: Game manager should not worry about players and their sides
+        for (int player = 0; player < NPlayers; player++)
         {
-            agents[side].Init(side, fullBoard);
-            var board = fullBoard.GetBoard(side);
+            agents[player].Init(player, FullBoard);
+            var board = FullBoard.GetBoard(player);
             board.OnBoardFilled += OnBoardFilled;
             board.OnDiePlaced += OnDiePlaced;
+
         }
 
-        CurrentPlayerSide = Random.Range(0, nPlayers);
-        OnSideChanged?.Invoke(CurrentPlayerSide);
+        CurrentTurnPlayerID = Random.Range(0, NPlayers);
+        OnNextPlayerTurn?.Invoke(CurrentTurnPlayerID);
         
         State = GameState.PLAYING;
         Debug.Log("Game started");
@@ -78,17 +78,26 @@ public class GameManager : MonoBehaviour
 
     private void OnDiePlaced(Board board, int die, int col)
     {
-        CurrentPlayerSide = (CurrentPlayerSide + 1) % nPlayers;
-        OnSideChanged?.Invoke(CurrentPlayerSide);
+        NextPlayerTurn();
+    }
+
+    private void NextPlayerTurn()
+    {
+        CurrentTurnPlayerID = (CurrentTurnPlayerID + 1) % NPlayers;
+        
+        // auto roll
+        FullBoard.GetBoard(CurrentTurnPlayerID).GetDieRoll().StartRolling();
+        
+        OnNextPlayerTurn?.Invoke(CurrentTurnPlayerID);
     }
 
     private void OnBoardFilled()
     {
         int winner = -1;
         int maxScore = 0;
-        for (int player = 0; player < nPlayers; player++)
+        for (int player = 0; player < NPlayers; player++)
         {
-            var score = fullBoard.GetBoard(player).GetTotalScore();
+            var score = FullBoard.GetBoard(player).GetTotalScore();
             if (score > maxScore)
             {
                 maxScore = score;
