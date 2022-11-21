@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace agents
 {
-    public abstract class Agent : MonoBehaviour
+    public abstract class Player : MonoBehaviour
     {
         protected int PlayerID = -1;
         protected FullBoard FullBoard;

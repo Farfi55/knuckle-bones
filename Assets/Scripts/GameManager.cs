@@ -50,7 +50,7 @@ public class GameManager : MonoBehaviour
         State = GameState.STARTING;
         Rules = new GameRules();
         FullBoard = new FullBoard(Rules);
-        var agents = FindObjectsOfType<Agent>();
+        var agents = FindObjectsOfType<Player>();
         
         if (agents.Length != NPlayers)
         {

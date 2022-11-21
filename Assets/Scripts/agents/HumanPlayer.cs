@@ -3,7 +3,7 @@ using Random = UnityEngine.Random;
 
 namespace agents
 {
-    public class HumanPlayer : Agent
+    public class HumanPlayer : Player
     {
 
         
