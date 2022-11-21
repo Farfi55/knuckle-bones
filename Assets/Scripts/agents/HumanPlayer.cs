@@ -14,6 +14,9 @@ namespace agents
 
             if (!Input.anyKeyDown)
                 return;
+            
+            if(Input.GetKeyDown(KeyCode.Space))
+                Board.GetDieRoll()?.StartRolling();
 
             if (Input.GetKeyDown(KeyCode.Alpha1))
             {

@@ -85,8 +85,8 @@ public class GameManager : MonoBehaviour
     {
         CurrentTurnPlayerID = (CurrentTurnPlayerID + 1) % NPlayers;
         
-        // auto roll
-        FullBoard.GetBoard(CurrentTurnPlayerID).GetDieRoll().StartRolling();
+        // remove comment for auto roll
+        // FullBoard.GetBoard(CurrentTurnPlayerID).GetDieRoll().StartRolling();
         
         OnNextPlayerTurn?.Invoke(CurrentTurnPlayerID);
     }

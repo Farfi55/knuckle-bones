@@ -23,7 +23,8 @@ namespace agents
         {
             if (playerID != PlayerID) return;
             
-            Board.GetDieRoll().StartRolling();
+            
+            Board.GetDieRoll()?.StartRolling();
         }
 
         protected bool IsItMyTurn()

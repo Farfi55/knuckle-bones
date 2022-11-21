@@ -25,8 +25,8 @@ namespace board.graphics
             if (_dynamicallyGenerateBoard)
             {
                 _graphicBoards = new GraphicBoard[_gm.NPlayers];
-                for (int side = 0; side < _gm.NPlayers; side++) 
-                    GenerateBoard(side);
+                for (int playerID = 0; playerID < _gm.NPlayers; playerID++) 
+                    GenerateBoard(playerID);
                 
             }
             else
@@ -35,7 +35,16 @@ namespace board.graphics
                     Debug.LogError("GraphicBoards is null");
                 else if (_graphicBoards.Length != _gm.NPlayers)
                     Debug.LogError("GraphicBoards array length does not match number of players");
+                else
+                {
+                    for (int playerID = 0; playerID < _gm.NPlayers; playerID++)
+                    {
+                        var board = _gm.FullBoard.GetBoard(playerID);
+                        _graphicBoards[playerID].Init(board);
+                    }
+                }
             }
+            
         }
 
         private void GenerateBoard(int side)
